@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\WebSocketsRouter;
 use App\Http\Controllers\SinglePageController;
 use App\Http\Controllers\RegistrationController;
 use App\Websockets\MessageHandler;
@@ -27,5 +26,3 @@ Route::post('login', [RegistrationController::class, 'login']);
 Route::get('logout', [RegistrationController::class, 'logout']);
 
 Route::get('/{any}', [SinglePageController::class, 'index'])->where('any', '.*');
-
-WebSocketsRouter::webSocket('/my-websocket', MessageHandler::class);
