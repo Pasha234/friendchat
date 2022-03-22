@@ -1,6 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\WebSocketsRouter;
+use App\Http\Controllers\SinglePageController;
+use App\Http\Controllers\RegistrationController;
+use App\Websockets\MessageHandler;
 
 /*
 |--------------------------------------------------------------------------
@@ -12,7 +16,16 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::get('checkUser', [RegistrationController::class, 'checkUser']);
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('getUser', [RegistrationController::class, 'getUser']);
+
+Route::post('signup', [RegistrationController::class, 'signup']);
+
+Route::post('login', [RegistrationController::class, 'login']);
+
+Route::get('logout', [RegistrationController::class, 'logout']);
+
+Route::get('/{any}', [SinglePageController::class, 'index'])->where('any', '.*');
+
+WebSocketsRouter::webSocket('/my-websocket', MessageHandler::class);
