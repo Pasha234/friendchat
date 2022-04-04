@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Chat;
 use App\Http\Resources\UserResource;
+use App\Http\Resources\ChatResource;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -38,7 +41,14 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        return new UserResource(User::find($id));
+        $user = User::find($id);
+        if ($user) {
+            return new UserResource($user);
+        } else {
+            return response()->json([
+                'error' => 'user with the given id is not found'
+            ], 404);
+        }
     }
 
     /**

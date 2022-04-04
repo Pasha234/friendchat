@@ -7,7 +7,7 @@
         <div class="lead mb-3">Please fill the following fields</div>
         <div class="mb-3">
           <label for="name" class="form-label">Name</label>
-          <input v-model="name" type="text" name="name" id="name" class="form-control" :class="{'is-invalid': errors.name !== ''}">
+          <input v-model="name" type="text" name="name" id="name" class="form-control" :class="{'is-invalid': errors.name !== ''}" autocomplete="name">
           <div class="invalid-feedback" v-show="errors.name !== ''">
             {{ errors.name }}
           </div>
@@ -15,7 +15,7 @@
 
         <div class="mb-3">
           <label for="email" class="form-label">Email</label>
-          <input v-model="email" type="text" name="email" id="email" class="form-control" :class="{'is-invalid': errors.email !== ''}">
+          <input v-model="email" type="text" name="email" id="email" class="form-control" :class="{'is-invalid': errors.email !== ''}" autocomplete="email">
           <div class="invalid-feedback" v-show="errors.email !== ''">
             {{ errors.email }}
           </div>
@@ -23,7 +23,7 @@
 
         <div class="mb-3">
           <label for="password" class="form-label">Password</label>
-          <input v-model="password" type="password" name="password" id="password" class="form-control" :class="{'is-invalid': errors.password !== ''}">
+          <input v-model="password" type="password" name="password" id="password" class="form-control" :class="{'is-invalid': errors.password !== ''}" autocomplete="new-password">
           <div class="invalid-feedback" v-show="errors.password !== ''">
             {{ errors.password }}
           </div>

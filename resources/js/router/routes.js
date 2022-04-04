@@ -7,6 +7,7 @@ import NotFound from '@/js/layouts/404';
 import SignUp from '@/js/views/SignUp';
 import Login from '@/js/views/Login';
 import Search from '@/js/views/Search';
+import Chat from '@/js/views/Chat';
 
 import guest from '@/js/router/middleware/guest.js';
 import auth from '@/js/router/middleware/auth.js';
@@ -43,6 +44,11 @@ const router = createRouter({
       path: '/signup',
       name: 'signup',
       component: SignUp,
+      meta: {
+        middleware: [
+          guest
+        ]
+      }
     },
     {
       path: '/login',
@@ -58,6 +64,16 @@ const router = createRouter({
       path: '/search',
       name: 'search',
       component: Search,
+    },
+    {
+      path: '/chat',
+      name: 'chat',
+      component: Chat,
+      meta: {
+        middleware: [
+          auth
+        ]
+      }
     },
 
     // 404

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 
-class RegistrationController extends Controller
+class ApiRegistrationController extends Controller
 {
     public function signup(Request $request) {
         $request->validate([
@@ -22,13 +22,15 @@ class RegistrationController extends Controller
         $user->password = Hash::make($request->password);
         $user->email = $request->email;
         $user->save();
-        Auth::loginUsingId($user->id);
+
+        $token = $user->createToken('myapptoken')->plainTextToken;
         return response()->json([
             'user' => [
                 'id' => $user->id,
                 'nickname' => $user->name,
                 'email' => $user->email,
-            ]
+            ],
+            'token' => $token,
         ]);
     }
 
@@ -37,15 +39,18 @@ class RegistrationController extends Controller
             'email' => 'required|max:255|email',
             'password' => 'required|max:255',
         ]);
+        $user = User::where('email', $credentials['email'])
+            ->first();
+        
         if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-            $user = Auth::user();
+            $token = $user->createToken('myapptoken')->plainTextToken;
             return response()->json([
                 'user' => [
                     'id' => $user->id,
                     'nickname' => $user->name,
                     'email' => $user->email,
-                ]
+                ],
+                'token' => $token,
             ]);
         }
  
@@ -56,12 +61,8 @@ class RegistrationController extends Controller
         ]);
     }
 
-    public function logout(Request $request) {
-        Auth::logout();
-
-        $request->session()->invalidate();
-
-        $request->session()->regenerateToken();
+    public function logout() {
+        auth()->user()->tokens()->delete();
 
         return response()->json([
             'success' => true
@@ -73,8 +74,10 @@ class RegistrationController extends Controller
     }
 
     public function getUser() {
+        $user = Auth::user();
         return response()->json([
-            'user' => Auth::user()
+            'user' => $user,
+            'token' => $user ? $user->createToken('myapptoken')->plainTextToken : null,
         ]);
     }
 }

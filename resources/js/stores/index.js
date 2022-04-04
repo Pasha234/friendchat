@@ -10,19 +10,21 @@ const store = createStore({
         auth: false,
         nickname: '',
         email: '',
-      }
+      },
+      token: null,
     }
   },
   mutations: {
     changeAuth (state, value) {
       state.user.auth = value
     },
-    setUser (state, user={}) {
+    setUser (state, user={}, token=null) {
       state.user.id = user.id ?? null;
       state.user.nickname = user.nickname ?? '';
       state.user.email = user.email ?? '';
       state.user.auth = user.auth ?? false
-    }
+      state.token = token
+    },
   },
   actions: {
     async checkUser(ctx) {
@@ -34,11 +36,11 @@ const store = createStore({
     async getUserFromServer(ctx) {
       await axios('/getUser')
       .then(response => {
-        if (response.data.name) {
+        if (response.data.user) {
           ctx.commit('setUser', {
-            id: response.data.id,
-            nickname: response.data.name,
-            email: response.data.email,
+            id: response.data.user.id,
+            nickname: response.data.user.name,
+            email: response.data.user.email,
             auth: true
           })
         }

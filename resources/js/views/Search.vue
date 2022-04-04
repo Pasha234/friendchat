@@ -12,29 +12,10 @@
           <div class="p-3 border bg-light mb-3"><img class="rounded-circle" style="width: 40px; height: 40px;" src="https://lifetimemix.com/wp-content/uploads/2021/06/1800x1200_cat_relaxing_on_patio_other.jpg" alt="cat"><span class="mx-3">{{ user.nickname }}</span></div>
         </router-link>
       </div>
-      <!-- <div class="d-flex flex-row justify-content-center pagination">
-        <div class="border nav-item" v-if="Math.ceil(count/10) > 0">
-          
-        </div>
-        <div class="border nav-item" v-if="Math.ceil(count/10) > 1">
-          <router-link class="nav-link" :to="createPaginationLink(2)">{{ 2 }}</router-link>
-        </div>
-        <div class="border nav-item" v-if="Math.ceil(count/10) > 2">
-          <router-link class="nav-link" :to="createPaginationLink(3)">{{ 3 }}</router-link>
-        </div>
-        <div class="border nav-item" v-if="Math.ceil(count/10) > 3">
-          <router-link class="nav-link" :to="createPaginationLink(4)">{{ 4 }}</router-link>
-        </div>
-        <div class="" v-if="Math.ceil(count/10) > 5">...</div>
-        <div class="border nav-item" v-if="Math.ceil(count/10) > 4">
-          <router-link class="nav-link" :to="createPaginationLink(Math.ceil(count/10))">{{ Math.ceil(count/10) }}</router-link>
-        </div>
-      </div> -->
       <nav aria-label="Page navigation" class="mt-4">
         <ul class="pagination" v-if="paginationNumber <= 1">
           <li class="page-item" v-if="getPage != 1"><router-link class="page-link" :to="createPaginationLink(Number(getPage) - 1)">Previous</router-link></li>
           <li class="page-item" v-for="i in paginationNumber" :key="i"><router-link class="page-link" :to="createPaginationLink(i)">{{ i }}</router-link></li>
-          <!-- <li class="page-item" v-else><router-link v-for="i in paginationNumber" :key="i" class="page-link" :to="createPaginationLink(i)">{{ i }}</router-link></li> -->
           <li class="page-item" v-if="getPage < paginationNumber"><router-link class="page-link" :to="createPaginationLink(Number(getPage) + 1)">Next</router-link></li>
         </ul>
         <ul class="pagination" v-else>
@@ -65,6 +46,9 @@ export default {
   },
   methods: {
     getUsers() {
+      if (!this.getSearchString) {
+        return 
+      }
       this.loading = true
       axios.get(window.location.origin + `/api/users/search?s=${this.getSearchString}&p=${this.getPage}`).then(response => {
         if (response.data.data) {

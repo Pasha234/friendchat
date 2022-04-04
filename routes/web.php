@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SinglePageController;
 use App\Http\Controllers\RegistrationController;
-use App\Websockets\MessageHandler;
+use App\Http\Controllers\MainController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,13 +16,10 @@ use App\Websockets\MessageHandler;
 |
 */
 Route::get('checkUser', [RegistrationController::class, 'checkUser']);
-
 Route::get('getUser', [RegistrationController::class, 'getUser']);
-
 Route::post('signup', [RegistrationController::class, 'signup']);
-
 Route::post('login', [RegistrationController::class, 'login']);
-
 Route::get('logout', [RegistrationController::class, 'logout']);
+Route::post('changeNickname', [MainController::class, 'changeNickname']);
 
 Route::get('/{any}', [SinglePageController::class, 'index'])->where('any', '.*');

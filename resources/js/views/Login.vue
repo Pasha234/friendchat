@@ -7,7 +7,7 @@
 
         <div class="mb-3">
           <label for="email" class="form-label">Email</label>
-          <input v-model="email" type="text" name="email" id="email" class="form-control" :class="{'is-invalid': errors.email !== ''}">
+          <input v-model="email" type="text" name="email" id="email" class="form-control" :class="{'is-invalid': errors.email !== ''}" autocomplete="email">
           <div class="invalid-feedback" v-show="errors.email !== ''">
             {{ errors.email }}
           </div>
@@ -15,7 +15,7 @@
 
         <div class="mb-3">
           <label for="password" class="form-label">Password</label>
-          <input v-model="password" type="password" name="password" id="password" class="form-control" :class="{'is-invalid': errors.password !== ''}">
+          <input v-model="password" type="password" name="password" id="password" class="form-control" :class="{'is-invalid': errors.password !== ''}" autocomplete="current-password">
           <div class="invalid-feedback" v-show="errors.password !== ''">
             {{ errors.password }}
           </div>
@@ -49,40 +49,48 @@ export default {
     nextStep() {
       // this.step++
       this.validated = true
-      axios.post(window.location.href, {
-        email: this.email,
-        password: this.password,
-      })
-      .then(response => {
-        if (response.data.errors) {
-          let errors = response.data.errors
-          for (let i in this.errors) {
-            if (errors.hasOwnProperty(i)) {
-              this.errors[i] = errors[i]
-            } else {
-              this.errors[i] = '';
+      axios.get('/sanctum/csrf-cookie').then(response => {
+        axios.post(window.location.href, {
+          email: this.email,
+          password: this.password,
+        })
+        .then(response => {
+          if (response.data.errors) {
+            let errors = response.data.errors
+            for (let i in this.errors) {
+              if (errors.hasOwnProperty(i)) {
+                this.errors[i] = errors[i]
+              } else {
+                this.errors[i] = '';
+              }
+            }
+          } else {
+            this.changeAuth(true)
+            this.setUser(response.data.user)
+            this.$router.push({
+              name: 'home',
+            })
+          }
+        })
+        .catch(error => {
+          if (error.response) {
+            let errors = error.response.data.errors
+            for (let i in this.errors) {
+              if (errors.hasOwnProperty(i)) {
+                this.errors[i] = errors[i][0]
+              } else {
+                this.errors[i] = '';
+              }
             }
           }
-        } else {
-          this.changeAuth(true)
-          this.setUser(response.data.user)
-          this.$router.push({
-            name: 'home',
-          })
-        }
+        });
       })
-      .catch(error => {
-        if (error.response) {
-          let errors = error.response.data.errors
-          for (let i in this.errors) {
-            if (errors.hasOwnProperty(i)) {
-              this.errors[i] = errors[i][0]
-            } else {
-              this.errors[i] = '';
-            }
-          }
-        }
-      })
+    },
+    startBroadcast(user_id) {
+      Echo.private('user.' + user_id)
+        .listen('NewMessage', (event) => {
+          console.log(event);
+        })
     }
   }
 };
