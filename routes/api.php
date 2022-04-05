@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\ApiRegistrationController;
+use App\Http\Controllers\MainController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,6 +38,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/logout', [ApiRegistrationController::class, 'logout']);
     Route::get('user/check', [ApiRegistrationController::class, 'checkUser']);
     Route::get('user/get', [ApiRegistrationController::class, 'getUser']);
+    Route::post('user/changeAvatar', [MainController::class, 'changeAvatar']);
     Route::get('users/search', [UserController::class, 'search'])
         ->name('users.search');
     Route::apiResources([

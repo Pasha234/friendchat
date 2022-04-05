@@ -6,7 +6,7 @@
           <span>Chat List</span>
         </li>
         <li class="list-group-item" v-for="user in users" :key="user.id">
-          <img class="rounded-circle image" style="width: 40px; height: 40px;" src="https://lifetimemix.com/wp-content/uploads/2021/06/1800x1200_cat_relaxing_on_patio_other.jpg" alt="cat">
+          <img class="rounded-circle image" style="width: 40px; height: 40px;" :src="user.avatar ? user.avatar : '/img/usernotfound.jpg'" :alt="user.nickname + ' avatar'">
           <router-link :to="'/chat?u=' + user.id" class="user-select-none mx-3">{{ user.nickname }}</router-link>
         </li>
       </ul>

@@ -2,7 +2,7 @@
   <div class="container-xl d-flex my-auto" style="height: 85%;">
     <div class="container-xl border d-flex flex-column mx-4 bg-light">
       <div class="header d-flex flex-row align-items-center p-3 border-bottom border-2">
-        <img class="rounded-circle mx-3" style="width: 50px; height: 50px;" src="https://lifetimemix.com/wp-content/uploads/2021/06/1800x1200_cat_relaxing_on_patio_other.jpg" alt="cat">
+        <img class="rounded-circle mx-3" style="width: 50px; height: 50px;" :src="anotherUser.avatar ? anotherUser.avatar : '/img/usernotfound.jpg'" :alt="anotherUser.nickname + ' avatar'">
         <h5 class="mx-3"><router-link v-if="userLink" :to="userLink">{{ anotherUser.nickname }}</router-link><span v-else>{{ anotherUser.nickname }}</span></h5>
       </div>
       <div class="c-content d-flex flex-column-reverse p-3">

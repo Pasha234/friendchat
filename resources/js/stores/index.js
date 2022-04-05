@@ -10,21 +10,24 @@ const store = createStore({
         auth: false,
         nickname: '',
         email: '',
-      },
-      token: null,
+        avatar: null,
+      }
     }
   },
   mutations: {
     changeAuth (state, value) {
       state.user.auth = value
     },
-    setUser (state, user={}, token=null) {
+    setUser (state, user={}) {
       state.user.id = user.id ?? null;
       state.user.nickname = user.nickname ?? '';
       state.user.email = user.email ?? '';
-      state.user.auth = user.auth ?? false
-      state.token = token
+      state.user.auth = user.auth ?? false;
+      state.user.avatar = user.avatar ?? null;
     },
+    setAvatar (state, avatar) {
+      state.user.avatar = avatar
+    }
   },
   actions: {
     async checkUser(ctx) {
@@ -39,8 +42,9 @@ const store = createStore({
         if (response.data.user) {
           ctx.commit('setUser', {
             id: response.data.user.id,
-            nickname: response.data.user.name,
+            nickname: response.data.user.nickname,
             email: response.data.user.email,
+            avatar: response.data.user.avatar,
             auth: true
           })
         }

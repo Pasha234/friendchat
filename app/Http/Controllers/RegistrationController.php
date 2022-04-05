@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Http\Resources\OwnerResource;
 
 class RegistrationController extends Controller
 {
@@ -73,8 +74,13 @@ class RegistrationController extends Controller
     }
 
     public function getUser() {
+        if (Auth::check()) {
+            return response()->json([
+                'user' => new OwnerResource(Auth::user())
+            ]);    
+        }
         return response()->json([
-            'user' => Auth::user()
+            'user' => null
         ]);
     }
 }

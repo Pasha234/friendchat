@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="col-sm-7 mx-auto mt-4">
-      <div class="p-3 border bg-light mb-3"><img class="rounded-circle" style="width: 100px; height: 100px;" src="https://lifetimemix.com/wp-content/uploads/2021/06/1800x1200_cat_relaxing_on_patio_other.jpg" alt="cat"><span class="mx-3">{{ getUser.id != $route.params.id ? user.nickname : getUser.nickname }}</span></div>
+      <div class="p-3 border bg-light mb-3"><img class="rounded-circle" style="width: 100px; height: 100px;" :src="getAvatar" alt="avatar"><span class="mx-3">{{ getUser.id != $route.params.id ? user.nickname : getUser.nickname }}</span></div>
       <ul class="list-group my-3" v-if="getUser.id == $route.params.id">
         <li class="list-group-item"><a @click.prevent="showNicknameForm" href="#" class="user-select-none">Change nickname</a></li>
         <li class="list-group-item" v-show="nicknameFormShown">
@@ -13,7 +13,9 @@
         <li class="list-group-item"><a @click.prevent="showAvatarForm" href="#" class="user-select-none">Change avatar</a></li>
         <li class="list-group-item" v-show="avatarFormShown">
           <label for="newAvatar">Choose new avatar: </label>
-          <input id="newNickname" type="file" class="form-control">
+          <input id="newNickname" type="file" class="form-control" ref="newAvatar" @change="setAvatarField" accept="image/png, image/jpeg, image/bmp">
+          <button class="btn btn-primary my-2" type="button" @click="changeAvatar">Submit</button>
+          <div class="alert alert-danger" role="alert" v-show="errors.avatar != ''">{{ errors.avatar }}</div>
         </li>
       </ul>
       <button v-if="getUser.id == $route.params.id" class="btn btn-danger" @click="logout">Logout</button>
@@ -30,6 +32,7 @@ export default {
     return {
       user: {},
       nickname: "",
+      avatar: "",
       nicknameFormShown: false,
       avatarFormShown: false,
       errors: {
@@ -39,12 +42,15 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(['setUser', 'changeAuth']),
+    ...mapMutations(['setUser', 'changeAuth', 'setAvatar']),
     getUserFromDb() {
       axios.get(window.location.origin + '/api/users/' + this.$route.params.id)
         .then(response => {
           this.user = response.data.data
         })
+    },
+    setAvatarField() {
+      this.avatar = this.$refs.newAvatar.files[0]
     },
     logout() {
       axios.get(window.location.origin + '/logout')
@@ -102,6 +108,37 @@ export default {
           }
         })
     },
+    changeAvatar() {
+      if (this.avatar) {
+        let formData = new FormData()
+        formData.append('avatar', this.avatar)
+
+        axios.post('/api/user/changeAvatar', formData, {
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'multipart/form-data'
+          }
+        })
+          .then(response => {
+            if (response.data.errors) {
+              this.errors.avatar = response.data.errors.avatar[0]
+            } else if (response.data.success) {
+              this.setAvatar(response.data.filename)
+              this.avatar = ''
+              this.$refs.newAvatar.value = null
+              this.avatarFormShown = false
+              this.errors.avatar = ''
+            }
+          })
+          .catch(error => {
+            if (error.response.errors) {
+              this.errors.avatar = error.response.data.errors.avatar[0]
+            } else {
+              this.errors.avatar = "The given data was invalid"
+            }
+          })
+      }
+    },
     openChat() {
 
     }
@@ -111,6 +148,9 @@ export default {
     getRoute() {
       return this.$route
     },
+    getAvatar() {
+      return this.getUser.id != this.$route.params.id ? (this.user.avatar ? this.user.avatar : '/img/usernotfound.jpg') : (this.getUser.avatar ? this.getUser.avatar : '/img/usernotfound.jpg')
+    }
   },
   mounted() {
     if (this.getUser.id != this.$route.params.id) {

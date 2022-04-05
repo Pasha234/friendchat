@@ -9,7 +9,7 @@
       <div v-show="!foundUsers.length" class="mx-auto w-50"><h1 class="display-6">No users found</h1></div>
       <div v-for="user in foundUsers" :key="user.id">
         <router-link :to="'/user/' + user.id">
-          <div class="p-3 border bg-light mb-3"><img class="rounded-circle" style="width: 40px; height: 40px;" src="https://lifetimemix.com/wp-content/uploads/2021/06/1800x1200_cat_relaxing_on_patio_other.jpg" alt="cat"><span class="mx-3">{{ user.nickname }}</span></div>
+          <div class="p-3 border bg-light mb-3"><img class="rounded-circle" style="width: 40px; height: 40px;" :src="user.avatar ? user.avatar : '/img/usernotfound.jpg'" :alt="user.nickname + ' avatar'"><span class="mx-3">{{ user.nickname }}</span></div>
         </router-link>
       </div>
       <nav aria-label="Page navigation" class="mt-4">

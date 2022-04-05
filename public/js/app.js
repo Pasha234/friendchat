@@ -20028,6 +20028,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     return {
       user: {},
       nickname: "",
+      avatar: "",
       nicknameFormShown: false,
       avatarFormShown: false,
       errors: {
@@ -20036,13 +20037,16 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
     };
   },
-  methods: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapMutations)(['setUser', 'changeAuth'])), {}, {
+  methods: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapMutations)(['setUser', 'changeAuth', 'setAvatar'])), {}, {
     getUserFromDb: function getUserFromDb() {
       var _this = this;
 
       axios.get(window.location.origin + '/api/users/' + this.$route.params.id).then(function (response) {
         _this.user = response.data.data;
       });
+    },
+    setAvatarField: function setAvatarField() {
+      this.avatar = this.$refs.newAvatar.files[0];
     },
     logout: function logout() {
       var _this2 = this;
@@ -20106,11 +20110,45 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         }
       });
     },
+    changeAvatar: function changeAvatar() {
+      var _this4 = this;
+
+      if (this.avatar) {
+        var formData = new FormData();
+        formData.append('avatar', this.avatar);
+        axios.post('/api/user/changeAvatar', formData, {
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'multipart/form-data'
+          }
+        }).then(function (response) {
+          if (response.data.errors) {
+            _this4.errors.avatar = response.data.errors.avatar[0];
+          } else if (response.data.success) {
+            _this4.setAvatar(response.data.filename);
+
+            _this4.avatar = '';
+            _this4.$refs.newAvatar.value = null;
+            _this4.avatarFormShown = false;
+            _this4.errors.avatar = '';
+          }
+        })["catch"](function (error) {
+          if (error.response.errors) {
+            _this4.errors.avatar = error.response.data.errors.avatar[0];
+          } else {
+            _this4.errors.avatar = "The given data was invalid";
+          }
+        });
+      }
+    },
     openChat: function openChat() {}
   }),
   computed: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapGetters)(['getUser'])), {}, {
     getRoute: function getRoute() {
       return this.$route;
+    },
+    getAvatar: function getAvatar() {
+      return this.getUser.id != this.$route.params.id ? this.user.avatar ? this.user.avatar : '/img/usernotfound.jpg' : this.getUser.avatar ? this.getUser.avatar : '/img/usernotfound.jpg';
     }
   }),
   mounted: function mounted() {
@@ -20211,7 +20249,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
 
 var _hoisted_1 = {
-  "class": "navbar navbar-expand-lg navbar-light bg-light"
+  "class": "navbar navbar-expand-lg navbar-light bg-light fixed-top"
 };
 var _hoisted_2 = {
   "class": "container-fluid"
@@ -20234,7 +20272,7 @@ var _hoisted_4 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementV
 );
 
 var _hoisted_5 = {
-  "class": "collapse navbar-collapse",
+  "class": "collapse navbar-collapse text-center",
   id: "navbarSupportedContent"
 };
 var _hoisted_6 = {
@@ -20253,7 +20291,7 @@ var _hoisted_9 = {
 var _hoisted_10 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("About");
 
 var _hoisted_11 = {
-  "class": "nav-item mx-2 d-flex align-items-center"
+  "class": "nav-item mx-2 d-flex align-items-center justify-content-center"
 };
 var _hoisted_12 = {
   key: 0,
@@ -20483,19 +20521,7 @@ var _hoisted_2 = {
 var _hoisted_3 = {
   "class": "header d-flex flex-row align-items-center p-3 border-bottom border-2"
 };
-
-var _hoisted_4 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("img", {
-  "class": "rounded-circle mx-3",
-  style: {
-    "width": "50px",
-    "height": "50px"
-  },
-  src: "https://lifetimemix.com/wp-content/uploads/2021/06/1800x1200_cat_relaxing_on_patio_other.jpg",
-  alt: "cat"
-}, null, -1
-/* HOISTED */
-);
-
+var _hoisted_4 = ["src", "alt"];
 var _hoisted_5 = {
   "class": "mx-3"
 };
@@ -20539,7 +20565,17 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 
   var _component_Message = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("Message");
 
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [_hoisted_4, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h5", _hoisted_5, [$data.userLink ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_router_link, {
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("img", {
+    "class": "rounded-circle mx-3",
+    style: {
+      "width": "50px",
+      "height": "50px"
+    },
+    src: $data.anotherUser.avatar ? $data.anotherUser.avatar : '/img/usernotfound.jpg',
+    alt: $data.anotherUser.nickname + ' avatar'
+  }, null, 8
+  /* PROPS */
+  , _hoisted_4), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h5", _hoisted_5, [$data.userLink ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_router_link, {
     key: 0,
     to: $data.userLink
   }, {
@@ -20628,18 +20664,7 @@ var _hoisted_4 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementV
 /* HOISTED */
 );
 
-var _hoisted_5 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("img", {
-  "class": "rounded-circle image",
-  style: {
-    "width": "40px",
-    "height": "40px"
-  },
-  src: "https://lifetimemix.com/wp-content/uploads/2021/06/1800x1200_cat_relaxing_on_patio_other.jpg",
-  alt: "cat"
-}, null, -1
-/* HOISTED */
-);
-
+var _hoisted_5 = ["src", "alt"];
 var _hoisted_6 = {
   key: 1,
   "class": "pt-4"
@@ -20659,7 +20684,17 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("li", {
       "class": "list-group-item",
       key: user.id
-    }, [_hoisted_5, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_router_link, {
+    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("img", {
+      "class": "rounded-circle image",
+      style: {
+        "width": "40px",
+        "height": "40px"
+      },
+      src: user.avatar ? user.avatar : '/img/usernotfound.jpg',
+      alt: user.nickname + ' avatar'
+    }, null, 8
+    /* PROPS */
+    , _hoisted_5), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_router_link, {
       to: '/chat?u=' + user.id,
       "class": "user-select-none mx-3"
     }, {
@@ -20833,19 +20868,7 @@ var _hoisted_8 = [_hoisted_7];
 var _hoisted_9 = {
   "class": "p-3 border bg-light mb-3"
 };
-
-var _hoisted_10 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("img", {
-  "class": "rounded-circle",
-  style: {
-    "width": "40px",
-    "height": "40px"
-  },
-  src: "https://lifetimemix.com/wp-content/uploads/2021/06/1800x1200_cat_relaxing_on_patio_other.jpg",
-  alt: "cat"
-}, null, -1
-/* HOISTED */
-);
-
+var _hoisted_10 = ["src", "alt"];
 var _hoisted_11 = {
   "class": "mx-3"
 };
@@ -20931,7 +20954,17 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       to: '/user/' + user.id
     }, {
       "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
-        return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_9, [_hoisted_10, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_11, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(user.nickname), 1
+        return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_9, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("img", {
+          "class": "rounded-circle",
+          style: {
+            "width": "40px",
+            "height": "40px"
+          },
+          src: user.avatar ? user.avatar : '/img/usernotfound.jpg',
+          alt: user.nickname + ' avatar'
+        }, null, 8
+        /* PROPS */
+        , _hoisted_10), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_11, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(user.nickname), 1
         /* TEXT */
         )])];
       }),
@@ -21242,19 +21275,7 @@ var _hoisted_2 = {
 var _hoisted_3 = {
   "class": "p-3 border bg-light mb-3"
 };
-
-var _hoisted_4 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("img", {
-  "class": "rounded-circle",
-  style: {
-    "width": "100px",
-    "height": "100px"
-  },
-  src: "https://lifetimemix.com/wp-content/uploads/2021/06/1800x1200_cat_relaxing_on_patio_other.jpg",
-  alt: "cat"
-}, null, -1
-/* HOISTED */
-);
-
+var _hoisted_4 = ["src"];
 var _hoisted_5 = {
   "class": "mx-3"
 };
@@ -21288,22 +21309,22 @@ var _hoisted_12 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElement
 /* HOISTED */
 );
 
-var _hoisted_13 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
-  id: "newNickname",
-  type: "file",
-  "class": "form-control"
-}, null, -1
-/* HOISTED */
-);
-
-var _hoisted_14 = [_hoisted_12, _hoisted_13];
-
-var _hoisted_15 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("Send Message");
+var _hoisted_13 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("Send Message");
 
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_router_link = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("router-link");
 
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [_hoisted_4, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_5, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(_ctx.getUser.id != _ctx.$route.params.id ? $data.user.nickname : _ctx.getUser.nickname), 1
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("img", {
+    "class": "rounded-circle",
+    style: {
+      "width": "100px",
+      "height": "100px"
+    },
+    src: $options.getAvatar,
+    alt: "avatar"
+  }, null, 8
+  /* PROPS */
+  , _hoisted_4), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_5, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(_ctx.getUser.id != _ctx.$route.params.id ? $data.user.nickname : _ctx.getUser.nickname), 1
   /* TEXT */
   )]), _ctx.getUser.id == _ctx.$route.params.id ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("ul", _hoisted_6, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("li", _hoisted_7, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("a", {
     onClick: _cache[0] || (_cache[0] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withModifiers)(function () {
@@ -21342,12 +21363,34 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     }, ["prevent"])),
     href: "#",
     "class": "user-select-none"
-  }, "Change avatar")]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("li", _hoisted_11, _hoisted_14, 512
+  }, "Change avatar")]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("li", _hoisted_11, [_hoisted_12, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+    id: "newNickname",
+    type: "file",
+    "class": "form-control",
+    ref: "newAvatar",
+    onChange: _cache[5] || (_cache[5] = function () {
+      return $options.setAvatarField && $options.setAvatarField.apply($options, arguments);
+    }),
+    accept: "image/png, image/jpeg, image/bmp"
+  }, null, 544
+  /* HYDRATE_EVENTS, NEED_PATCH */
+  ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+    "class": "btn btn-primary my-2",
+    type: "button",
+    onClick: _cache[6] || (_cache[6] = function () {
+      return $options.changeAvatar && $options.changeAvatar.apply($options, arguments);
+    })
+  }, "Submit"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+    "class": "alert alert-danger",
+    role: "alert"
+  }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.errors.avatar), 513
+  /* TEXT, NEED_PATCH */
+  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vShow, $data.errors.avatar != '']])], 512
   /* NEED_PATCH */
   ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vShow, $data.avatarFormShown]])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), _ctx.getUser.id == _ctx.$route.params.id ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
     key: 1,
     "class": "btn btn-danger",
-    onClick: _cache[5] || (_cache[5] = function () {
+    onClick: _cache[7] || (_cache[7] = function () {
       return $options.logout && $options.logout.apply($options, arguments);
     })
   }, "Logout")) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_router_link, {
@@ -21357,7 +21400,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     onClick: $options.openChat
   }, {
     "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
-      return [_hoisted_15];
+      return [_hoisted_13];
     }),
     _: 1
     /* STABLE */
@@ -21655,9 +21698,9 @@ var store = (0,vuex__WEBPACK_IMPORTED_MODULE_2__.createStore)({
         id: null,
         auth: false,
         nickname: '',
-        email: ''
-      },
-      token: null
+        email: '',
+        avatar: null
+      }
     };
   },
   mutations: {
@@ -21665,15 +21708,17 @@ var store = (0,vuex__WEBPACK_IMPORTED_MODULE_2__.createStore)({
       state.user.auth = value;
     },
     setUser: function setUser(state) {
-      var _user$id, _user$nickname, _user$email, _user$auth;
+      var _user$id, _user$nickname, _user$email, _user$auth, _user$avatar;
 
       var user = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      var token = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
       state.user.id = (_user$id = user.id) !== null && _user$id !== void 0 ? _user$id : null;
       state.user.nickname = (_user$nickname = user.nickname) !== null && _user$nickname !== void 0 ? _user$nickname : '';
       state.user.email = (_user$email = user.email) !== null && _user$email !== void 0 ? _user$email : '';
       state.user.auth = (_user$auth = user.auth) !== null && _user$auth !== void 0 ? _user$auth : false;
-      state.token = token;
+      state.user.avatar = (_user$avatar = user.avatar) !== null && _user$avatar !== void 0 ? _user$avatar : null;
+    },
+    setAvatar: function setAvatar(state, avatar) {
+      state.user.avatar = avatar;
     }
   },
   actions: {
@@ -21707,8 +21752,9 @@ var store = (0,vuex__WEBPACK_IMPORTED_MODULE_2__.createStore)({
                   if (response.data.user) {
                     ctx.commit('setUser', {
                       id: response.data.user.id,
-                      nickname: response.data.user.name,
+                      nickname: response.data.user.nickname,
                       email: response.data.user.email,
+                      avatar: response.data.user.avatar,
                       auth: true
                     });
                   }
