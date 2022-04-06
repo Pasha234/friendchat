@@ -58,7 +58,6 @@ export default {
   mounted() {
     this.getAnotherUser()
     this.getMessages()
-    this.startListening()
   },
   created() {
     if (this.$route.query.u == this.getUser.id) {
@@ -73,6 +72,7 @@ export default {
         .then(response => {
           this.anotherUser = response.data.data
           this.userLink = '/user/' + this.$route.query.u
+          this.startListening()
         })
         .catch(error => {
           console.log(error);
@@ -111,7 +111,7 @@ export default {
       }
     },
     startListening() {
-      Echo.private('chatToUser.' + this.getUser.id)
+      Echo.private('chatToUser.from.' + this.getUser.id + '.to.' + this.anotherUser.id)
         .listen('NewMessage', (data) => {
           this.messages.unshift(data.message)
         })

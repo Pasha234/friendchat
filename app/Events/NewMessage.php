@@ -40,8 +40,8 @@ class NewMessage implements ShouldBroadcastNow
     public function broadcastOn()
     {
         return [
-            new PrivateChannel('chatToUser.' . $this->to->id),
-            new PrivateChannel('chatToUser.' . $this->from->id),
+            new PrivateChannel('chatToUser.from.' . $this->from->id . '.to.' . $this->to->id),
+            new PrivateChannel('chatToUser.from.' . $this->to->id . '.to.' . $this->from->id),
         ];
     }
 

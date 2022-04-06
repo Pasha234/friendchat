@@ -19649,7 +19649,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   mounted: function mounted() {
     this.getAnotherUser();
     this.getMessages();
-    this.startListening();
   },
   created: function created() {
     if (this.$route.query.u == this.getUser.id) {
@@ -19665,6 +19664,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       axios.get('api/users/' + this.$route.query.u).then(function (response) {
         _this.anotherUser = response.data.data;
         _this.userLink = '/user/' + _this.$route.query.u;
+
+        _this.startListening();
       })["catch"](function (error) {
         console.log(error);
         _this.anotherUser.nickname = 'Not Found';
@@ -19704,7 +19705,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     startListening: function startListening() {
       var _this4 = this;
 
-      Echo["private"]('chatToUser.' + this.getUser.id).listen('NewMessage', function (data) {
+      Echo["private"]('chatToUser.from.' + this.getUser.id + '.to.' + this.anotherUser.id).listen('NewMessage', function (data) {
         _this4.messages.unshift(data.message);
       });
     }

@@ -22,7 +22,7 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
 
 Broadcast::channel('user.{user_id}', UserChannel::class);
 
-Broadcast::channel('chatToUser.{user_id}', function ($user, $user_id) {
+Broadcast::channel('chatToUser.from.{user_id}.to.{another_user_id}', function ($user, $user_id, $another_user_id) {
     return $user->id == $user_id;
 });
 
