@@ -3,7 +3,6 @@
 use Illuminate\Support\Facades\Broadcast;
 use App\Broadcasting\UserChannel;
 use App\Broadcasting\ChatChannel;
-use App\Models\Chat;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,9 +19,13 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
 
-Broadcast::channel('user.{user_id}', UserChannel::class);
+// Broadcast::channel('user.{user_id}', UserChannel::class);
 
 Broadcast::channel('chatToUser.from.{user_id}.to.{another_user_id}', function ($user, $user_id, $another_user_id) {
+    return $user->id == $user_id;
+});
+
+Broadcast::channel('user.{user_id}.chats', function ($user, $user_id) {
     return $user->id == $user_id;
 });
 

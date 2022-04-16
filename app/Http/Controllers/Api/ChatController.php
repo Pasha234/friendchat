@@ -10,6 +10,7 @@ use App\Models\Message;
 use App\Models\Chat;
 use App\Models\User;
 use App\Events\NewMessage;
+use App\Events\NewMessageInChats;
 
 class ChatController extends Controller
 {
@@ -90,6 +91,9 @@ class ChatController extends Controller
                     'error' => 'There is no chat between these two users',
                 ], 404);
             }
+            Message::where('chat_id', $chat->id)
+                ->where('user_id', '!=', $user->id)
+                ->update(['unread' => 0]);
             return response()->json([
                 'chat' => new ChatResource($chat),
                 'messages' => MessageResource::collection(
@@ -132,6 +136,8 @@ class ChatController extends Controller
             $message->user_id = $request->from;
             $message->save();
             event(new NewMessage(User::find($validated['to']), User::find($validated['from']), $message));
+            $request->merge(['toUser', $request->to]);
+            event(new NewMessageInChats(User::find($validated['to']), $chat));
             return response()->json([
                 'chat' => new ChatResource($chat),
                 'success' => true,
@@ -150,6 +156,8 @@ class ChatController extends Controller
                 $message->user_id = $request->from;
                 $message->save();
                 event(new NewMessage($to, User::find($validated['from']), $message));
+                $request->merge(['toUser' => $to->id]);
+                event(new NewMessageInChats($to, $chat));
                 return response()->json([
                     'success' => true
                 ]);

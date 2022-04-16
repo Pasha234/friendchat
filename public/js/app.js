@@ -19650,6 +19650,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     this.getAnotherUser();
     this.getMessages();
   },
+  unmounted: function unmounted() {
+    this.stopListening();
+  },
   created: function created() {
     if (this.$route.query.u == this.getUser.id) {
       this.$router.push({
@@ -19708,6 +19711,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       Echo["private"]('chatToUser.from.' + this.getUser.id + '.to.' + this.anotherUser.id).listen('NewMessage', function (data) {
         _this4.messages.unshift(data.message);
       });
+    },
+    stopListening: function stopListening() {
+      Echo.leave('chatToUser.from.' + this.getUser.id + '.to.' + this.anotherUser.id);
     }
   }
 });
@@ -19736,12 +19742,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
-      users: [],
+      chats: [],
       loading: true
     };
   },
   created: function created() {
     this.getChats();
+  },
+  unmounted: function unmounted() {
+    this.stopListeningForChats();
   },
   methods: {
     getChats: function getChats() {
@@ -19750,9 +19759,16 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.loading = true;
       axios.get('/api/user/chats').then(function (response) {
         if (response.data) {
-          _this.users = response.data.data.map(function (v) {
-            return v.to.id == _this.getUser.id ? v.from : v.to;
+          _this.chats = response.data.data.map(function (v) {
+            return {
+              user: v.to.id == _this.getUser.id ? v.from : v.to,
+              name: v.name,
+              new_messages: v.new_messages,
+              id: v.id
+            };
           });
+
+          _this.startListeningForChats();
         }
 
         _this.loading = false;
@@ -19760,6 +19776,26 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         console.log(error);
         _this.loading = false;
       });
+    },
+    startListeningForChats: function startListeningForChats() {
+      var _this2 = this;
+
+      Echo["private"]('user.' + this.getUser.id + '.chats').listen('NewMessageInChats', function (data) {
+        console.log(data);
+        _this2.chats = _this2.chats.filter(function (v) {
+          return v.id != data.chat.id;
+        });
+
+        _this2.chats.unshift({
+          user: data.chat.to.id == _this2.getUser.id ? data.chat.from : data.chat.to,
+          name: data.chat.name,
+          new_messages: data.chat.new_messages,
+          id: data.chat.id
+        });
+      });
+    },
+    stopListeningForChats: function stopListeningForChats() {
+      Echo.leave('user.' + this.getUser.id + '.chats');
     }
   },
   computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapGetters)(['getUser']))
@@ -20491,8 +20527,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
 
+var _hoisted_1 = {
+  "class": "container"
+};
+
+var _hoisted_2 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createStaticVNode)("<div class=\"col-sm-7 mx-auto mt-4 d-flex flex-column\"><h1 class=\"display-6\">What is FriendChat?</h1><p class=\"lead\">FriendChat is a simple messenger built on pure enthusiasm. It was made in study purpose nevertheless it is quite possible to use it as a real messenger app.</p><h2 class=\"display-6\">How to use it?</h2><p class=\"lead\">It is quite simple.</p><h4>Step 1</h4><p class=\"lead\">Find another users using the search field above</p><div class=\"w-auto d-flex flex-row\"><img class=\"mx-auto\" src=\"/img/how-to-use-step1-search-field.png\" alt=\"Explanation how to find users\"></div><figure class=\"figure my-2\"><img src=\"/img/how-to-use-step1-list.png\" alt=\"Found users list\"><figcaption class=\"figure-caption\">List of found users</figcaption></figure><h4>Step 2</h4><p class=\"lead\">You can select a user to see their profile and also send them a message</p><img src=\"/img/how-to-use-step2-profile.png\" style=\"width:100%;\" alt=\"Click on the &#39;send message&#39; button\"><h4>Step 3</h4><p class=\"lead\">Just send your first message and now you&#39;ll see a new chat in your home page</p><img style=\"width:100%;\" src=\"/img/how-to-use-step3-send-message.png\" alt=\"Send first message\"><img class=\"align-self-center\" src=\"/img/how-to-use-step3-new-chat.png\" alt=\"New chat on home page\"><p class=\"lead\">Also you can watch on your home page if someone sent you a message</p><img class=\"mb-4 align-self-center\" src=\"/img/how-to-use-message-count.png\" alt=\"New messages count appear near the chat\"></div>", 1);
+
+var _hoisted_3 = [_hoisted_2];
 function render(_ctx, _cache) {
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", null, "About component");
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, _hoisted_3);
 }
 
 /***/ }),
@@ -20667,40 +20710,42 @@ var _hoisted_4 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementV
 
 var _hoisted_5 = ["src", "alt"];
 var _hoisted_6 = {
+  key: 0,
+  "class": "badge bg-secondary ms-auto"
+};
+var _hoisted_7 = {
   key: 1,
   "class": "pt-4"
 };
 
-var _hoisted_7 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
-  "class": ""
-}, "It seems you don't have any chats. Find users using search field above 😀", -1
+var _hoisted_8 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, "It seems you don't have any chats. Find users using search field above 😀", -1
 /* HOISTED */
 );
 
-var _hoisted_8 = [_hoisted_7];
+var _hoisted_9 = [_hoisted_8];
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_router_link = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("router-link");
 
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)(((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [$data.users.length > 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("ul", _hoisted_3, [_hoisted_4, ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.users, function (user) {
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)(((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [$data.chats.length > 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("ul", _hoisted_3, [_hoisted_4, ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.chats, function (chat) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("li", {
-      "class": "list-group-item",
-      key: user.id
+      "class": "list-group-item d-flex flex-row align-items-center",
+      key: chat.id
     }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("img", {
       "class": "rounded-circle image",
       style: {
         "width": "40px",
         "height": "40px"
       },
-      src: user.avatar ? user.avatar : '/img/usernotfound.jpg',
-      alt: user.nickname + ' avatar'
+      src: chat.user.avatar ? chat.user.avatar : '/img/usernotfound.jpg',
+      alt: chat.user.nickname + ' avatar'
     }, null, 8
     /* PROPS */
     , _hoisted_5), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_router_link, {
-      to: '/chat?u=' + user.id,
+      to: '/chat?u=' + chat.user.id,
       "class": "user-select-none mx-3"
     }, {
       "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
-        return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)((0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(user.nickname), 1
+        return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)((0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(chat.user.nickname), 1
         /* TEXT */
         )];
       }),
@@ -20709,10 +20754,12 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 
     }, 1032
     /* PROPS, DYNAMIC_SLOTS */
-    , ["to"])]);
+    , ["to"]), chat.new_messages > 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("span", _hoisted_6, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(chat.new_messages), 1
+    /* TEXT */
+    )) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]);
   }), 128
   /* KEYED_FRAGMENT */
-  ))])) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_6, _hoisted_8))])], 512
+  ))])) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_7, _hoisted_9))])], 512
   /* NEED_PATCH */
   )), [[vue__WEBPACK_IMPORTED_MODULE_0__.vShow, !$data.loading]]);
 }

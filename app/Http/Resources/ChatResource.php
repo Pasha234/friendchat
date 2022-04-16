@@ -15,11 +15,19 @@ class ChatResource extends JsonResource
      */
     public function toArray($request)
     {
+        $user = auth()->user();
         return [
             'id' => $this->id,
             'name' => $this->name,
             'to' => new UserResource($this->toUser),
-            'from' => new UserResource($this->fromUser)
+            'from' => new UserResource($this->fromUser),
+            'new_messages' => $this->when($request->input('toUser', null), 
+            $this->messages->where('user_id', '!=', $request->toUser)
+                ->where('unread', 1)
+                ->count(),
+            $this->messages->where('user_id', '!=', $user->id)
+                ->where('unread', 1)
+                ->count())
         ];
     }
 }

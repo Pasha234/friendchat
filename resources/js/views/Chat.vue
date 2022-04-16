@@ -59,6 +59,9 @@ export default {
     this.getAnotherUser()
     this.getMessages()
   },
+  unmounted() {
+    this.stopListening()
+  },
   created() {
     if (this.$route.query.u == this.getUser.id) {
       this.$router.push({
@@ -115,6 +118,9 @@ export default {
         .listen('NewMessage', (data) => {
           this.messages.unshift(data.message)
         })
+    },
+    stopListening() {
+      Echo.leave('chatToUser.from.' + this.getUser.id + '.to.' + this.anotherUser.id)
     }
   },
 }
