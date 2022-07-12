@@ -1,64 +1,30 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# FriendChat
+## **English**
+FriendChat is a SPA site made using Laravel and Vue. The site is a simple messenger, where users can exchange messages and receive it in real time without needing to refresh the page due to using websockets. Also users can change their nickname, change their avatar and find other users by typing in searchbar. Vue Framework is responsible for routing and storing local user session data. Laravel on the other side is responsible for maintaining API system, which fetches data from database. Websockets connection are built using pusher and laravel-echo packages.
+###### Tech Stack: Laravel, Vue, Vuex, Vue-Router, MySQL
+###### Laravel Packages: 
+  - "php": "^7.3|^8.0",
+  - "beyondcode/laravel-websockets": "^1.13",
+  - "fruitcake/laravel-cors": "^2.0",
+  - "guzzlehttp/guzzle": "^7.0.1",
+  - "intervention/image": "^2.7",
+  - "laravel/framework": "^8.75",
+  - "laravel/sanctum": "^2.15",
+  - "laravel/tinker": "^2.5",
+  - "pusher/pusher-php-server": "~3.0",
+  - "walkor/workerman": "^4.0"
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
-
-## About Laravel
-
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
-
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
-
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## **Russian**
+FriendChat — это SPA-сайт, созданный с использованием Laravel и Vue. Сайт представляет собой простой мессенджер, в котором пользователи могут обмениваться сообщениями и получать их в режиме реального времени без необходимости обновлять страницу благодаря использованию веб-сокетов. Также пользователи могут изменить свой никнейм, изменить свой аватар и найти других пользователей, набрав в строке поиска. Vue фреймворк отвечает за маршрутизацию и хранение данных локального сеанса пользователя. Laravel, с другой стороны, отвечает за поддержку системы API, которая извлекает данные из базы данных. Соединение веб-сокетов построено с использованием пакетов pusher и laravel-echo.
+###### Перечнь технологий: Laravel, Vue, Vuex, Vue-Router, MySQL
+###### Пакеты Laravel: 
+  - "php": "^7.3|^8.0",
+  - "beyondcode/laravel-websockets": "^1.13",
+  - "fruitcake/laravel-cors": "^2.0",
+  - "guzzlehttp/guzzle": "^7.0.1",
+  - "intervention/image": "^2.7",
+  - "laravel/framework": "^8.75",
+  - "laravel/sanctum": "^2.15",
+  - "laravel/tinker": "^2.5",
+  - "pusher/pusher-php-server": "~3.0",
+  - "walkor/workerman": "^4.0"
