@@ -46,7 +46,7 @@ class MainController extends Controller
           $image->heighten(300);
         }
         $image->crop(300, 300);
-        return response()->json(['success' => true, $pathToImg]);
+        return response()->json(['success' => true, 'file' => $pathToImg]);
         $image->save();
         $user = Auth::user();
         if ($user->avatar) {
