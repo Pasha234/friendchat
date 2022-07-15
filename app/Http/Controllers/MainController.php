@@ -45,7 +45,9 @@ class MainController extends Controller
         } else {
           $image->heighten(300);
         }
-        $image->crop(300, 300)->save();
+        $image->crop(300, 300);
+        return response()->json(['success' => true, $pathToImg]);
+        $image->save();
         $user = Auth::user();
         if ($user->avatar) {
           Storage::disk('public')->delete($user->avatar);
