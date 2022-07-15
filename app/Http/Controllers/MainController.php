@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Intervention\Image\ImageManagerStatic as Image;
 use Illuminate\Support\Facades\Storage;
+use Cloudinary;
 
 class MainController extends Controller
 {
@@ -37,24 +38,43 @@ class MainController extends Controller
       ]);
       if ($request->file('avatar')->isValid()) {
         $imgName = uniqid() . '.jpg';
-        $path = $request->file('avatar')->storeAs('public', $imgName);
-        $pathToImg = $_SERVER['DOCUMENT_ROOT'] . '/../storage/app/' . $path;
-        $image = Image::make($pathToImg);
+        // $path = $request->file('avatar')->storeAs('public', $imgName);
+        $path = $request->file('avatar')->getPathName();
+        // $pathToImg = $_SERVER['DOCUMENT_ROOT'] . '/../storage/app/' . $path;
+        // $image = Image::make($pathToImg);
+        $image = Image::make($path);
         if ($image->height() > $image->width()) {
           $image->widen(300);
         } else {
           $image->heighten(300);
         }
         $image->crop(300, 300);
-        return response()->json(['success' => true, 'file' => $pathToImg]);
         $image->save();
+        // $yourFile = new UploadedBase64EncodedFile(new Base64EncodedFile($image->toString())); 
+        // $imgRaw = imagecreatefromstring( $image->__toString() );
+        // if ($imgRaw !== false) {
+        //     imagejpeg($imgRaw, storage_path().'/tmp/tmp.jpg',100);
+        //     imagedestroy($imgRaw);
+        //     $file =  new UploadedFile( storage_path().'/tmp/tmp.jpg', 'tmp.jpg', 'image/jpeg',null,null,true);
+        //     // DO STUFF WITH THE UploadedFile
+        // }
+        // dd($image->__toString());
+        $uploadedFileUrl = Cloudinary::upload($path)->getSecurePath();
         $user = Auth::user();
         if ($user->avatar) {
-          Storage::disk('public')->delete($user->avatar);
+          // Storage::disk('public')->delete($user->avatar);
+          $url_path = explode('/', 
+            parse_url($user->avatar)['path']
+          );
+          cloudinary()->uploadApi()->destroy(
+            explode(".", 
+              end($url_path)
+            )[0]
+          );
         }
-        $user->avatar = $imgName;
+        $user->avatar = $uploadedFileUrl;
         $user->save();
-        return response()->json(['success' => true, 'filename' => asset('storage/' . $imgName)]);
+        return response()->json(['success' => true, 'filename' => $uploadedFileUrl]);
       }
     }
 }

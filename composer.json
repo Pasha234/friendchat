@@ -6,7 +6,9 @@
     "license": "MIT",
     "require": {
         "php": "^7.3.4",
+        "ext-gd": "*",
         "beyondcode/laravel-websockets": "^1.13",
+        "cloudinary-labs/cloudinary-laravel": "^1.0",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "intervention/image": "^2.7",
@@ -14,8 +16,7 @@
         "laravel/sanctum": "^2.15",
         "laravel/tinker": "^2.5",
         "pusher/pusher-php-server": "~3.0",
-        "walkor/workerman": "^4.0",
-        "ext-gd": "*"
+        "walkor/workerman": "^4.0"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

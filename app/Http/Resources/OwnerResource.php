@@ -18,7 +18,7 @@ class OwnerResource extends JsonResource
             'id' => $this->id,
             'nickname' => $this->name,
             'email' => $this->email,
-            'avatar' => $this->avatar ? asset('storage/' . $this->avatar) : null,
+            'avatar' => $this->avatar ? $this->avatar : null,
         ];
     }
 }
