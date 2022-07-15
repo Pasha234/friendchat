@@ -14,6 +14,8 @@ FriendChat is a SPA site made using Laravel and Vue. The site is a simple messen
   - "pusher/pusher-php-server": "~3.0",
   - "walkor/workerman": "^4.0"
 
+Site: https://friendchat-online.herokuapp.com/
+
 ## **Russian**
 FriendChat — это SPA-сайт, созданный с использованием Laravel и Vue. Сайт представляет собой простой мессенджер, в котором пользователи могут обмениваться сообщениями и получать их в режиме реального времени без необходимости обновлять страницу благодаря использованию веб-сокетов. Также пользователи могут изменить свой никнейм, изменить свой аватар и найти других пользователей, набрав в строке поиска. Vue фреймворк отвечает за маршрутизацию и хранение данных локального сеанса пользователя. Laravel, с другой стороны, отвечает за поддержку системы API, которая извлекает данные из базы данных. Соединение веб-сокетов построено с использованием пакетов pusher и laravel-echo.
 ###### Перечнь технологий: Laravel, Vue, Vuex, Vue-Router, MySQL
@@ -28,3 +30,5 @@ FriendChat — это SPA-сайт, созданный с использован
   - "laravel/tinker": "^2.5",
   - "pusher/pusher-php-server": "~3.0",
   - "walkor/workerman": "^4.0"
+
+Сайт: https://friendchat-online.herokuapp.com/
