@@ -110,6 +110,10 @@ export default {
     },
     changeAvatar() {
       if (this.avatar) {
+        if (this.avatar.size > 1000000) {
+          this.errors.avatar = "Avatar must be less than 1Mb"
+          return
+        }
         let formData = new FormData()
         formData.append('avatar', this.avatar)
 

@@ -20151,6 +20151,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       var _this4 = this;
 
       if (this.avatar) {
+        if (this.avatar.size > 1000000) {
+          this.errors.avatar = "Avatar must be less than 1Mb";
+          return;
+        }
+
         var formData = new FormData();
         formData.append('avatar', this.avatar);
         axios.post('/api/user/changeAvatar', formData, {
