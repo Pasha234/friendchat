@@ -1,0 +1,163 @@
+services:
+    nginx:
+        build:
+            context: ./docker/nginx
+            dockerfile: Dockerfile
+        image: balance/nginx
+        ports:
+            - "80:80"
+        volumes:
+            - ./:/data/mysite.local
+        networks:
+            - dev
+    php:
+        build:
+            context: ./docker/fpm
+            dockerfile: Dockerfile
+        working_dir: /data/mysite.local
+        image: balance/php
+        env_file: docker/docker.env
+        volumes:
+            - ./:/data/mysite.local
+        networks:
+            - dev
+        depends_on:
+            mysql:
+                condition: service_healthy
+            dbtest:
+                condition: service_healthy
+
+    websocket:
+        build:
+            context: ./docker/fpm
+            dockerfile: Dockerfile
+        working_dir: /data/mysite.local
+        image: balance/php
+        env_file: docker/docker.env
+        command: php artisan websockets:serve
+        ports:
+            - 6001:6001
+        volumes:
+            - ./:/data/mysite.local
+        networks:
+            - dev
+        depends_on:
+            mysql:
+                condition: service_healthy
+            dbtest:
+                condition: service_healthy
+
+    mysql:
+        image: mysql/mysql-server:8.0
+        environment:
+            MYSQL_ROOT_PASSWORD: $DB_PASSWORD
+            MYSQL_ROOT_HOST: "%"
+            MYSQL_DATABASE: $DB_DATABASE
+        ports:
+            - 3306:3306
+        volumes:
+            - mysqldata:/var/lib/mysql
+            - ./:/var/project
+        healthcheck:
+            test: mysqladmin ping -h 127.0.0.1 -u root --password=$$MYSQL_ROOT_PASSWORD
+            interval: 5s
+            retries: 10
+        networks:
+            - dev
+
+    # Database for testing
+    dbtest:
+        image: mysql/mysql-server:8.0
+        environment:
+            MYSQL_ROOT_PASSWORD: $DB_PASSWORD
+            MYSQL_ROOT_HOST: "%"
+            MYSQL_DATABASE: $DB_DATABASE
+        networks:
+            - dev
+        healthcheck:
+            test: mysqladmin ping -h 127.0.0.1 -u root --password=$$MYSQL_ROOT_PASSWORD
+            interval: 5s
+            retries: 10
+
+    # redis:
+    #     image: redis:7.2-rc2-bookworm
+    #     ports:
+    #         - '6379:6379'
+    #     command: redis-server --save 20 1 --loglevel warning
+    #     volumes:
+    #         - cache:/data
+    #     networks:
+    #         - dev
+
+    # manticore:
+    #     build:
+    #         context: docker
+    #         dockerfile: manticore.dockerfile
+    #     environment:
+    #         - EXTRA=1
+    #     ports:
+    #         - 9306:9306
+    #         - 9308:9308
+    #     ulimits:
+    #         nproc: 65535
+    #         nofile:
+    #             soft: 65535
+    #             hard: 65535
+    #         memlock:
+    #             soft: -1
+    #             hard: -1
+    #     volumes:
+    #         - ./:/var/project
+    #     networks:
+    #         - dev
+
+    frontend:
+        build:
+            context: docker
+            dockerfile: frontend.dockerfile
+        working_dir: /var/www/project
+        tty: true
+        command: npm run dev
+        volumes:
+            - ./:/var/www/project
+        ports:
+            - 5173:5173
+        depends_on:
+            - php
+        env_file: docker/docker.env
+        networks:
+            - dev
+
+    # mailhog:
+    #     image: mailhog/mailhog
+    #     logging:
+    #         driver: 'none'  # disable saving logs
+    #     ports:
+    #         - 1025:1025 # smtp server
+    #         - 8025:8025 # web ui
+    #     networks:
+    #         - dev
+
+    # devcontainer-service:
+    #     build:
+    #         context: .devcontainer
+    #         dockerfile: Dockerfile
+    #     volumes:
+    #         - ./:/workspace
+    #     networks:
+    #         - dev
+    #     env_file:
+    #         - docker/docker.env
+    #     command: sleep infinity
+    #     depends_on:
+    #         dbtest:
+    #             condition: service_healthy
+
+# Volumes
+volumes:
+    cache:
+        driver: local
+    mysqldata:
+
+networks:
+  dev:

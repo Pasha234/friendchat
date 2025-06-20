@@ -18,7 +18,7 @@ use App\Http\Controllers\MainController;
 Route::get('checkUser', [RegistrationController::class, 'checkUser']);
 Route::get('getUser', [RegistrationController::class, 'getUser']);
 Route::post('signup', [RegistrationController::class, 'signup']);
-Route::post('login', [RegistrationController::class, 'login']);
+Route::post('login', [RegistrationController::class, 'login'])->name('login');
 Route::get('logout', [RegistrationController::class, 'logout']);
 Route::post('changeNickname', [MainController::class, 'changeNickname']);
 

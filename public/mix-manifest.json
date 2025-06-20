@@ -3,5 +3,12 @@
     "/css/app.css": "/css/app.css",
     "/css/bootstrap.min.css": "/css/bootstrap.min.css",
     "/css/bootstrap.min.css.map": "/css/bootstrap.min.css.map",
-    "/img/search.png": "/img/search.png"
+    "/img/how-to-use-message-count.png": "/img/how-to-use-message-count.png",
+    "/img/how-to-use-step1-list.png": "/img/how-to-use-step1-list.png",
+    "/img/how-to-use-step1-search-field.png": "/img/how-to-use-step1-search-field.png",
+    "/img/how-to-use-step2-profile.png": "/img/how-to-use-step2-profile.png",
+    "/img/how-to-use-step3-new-chat.png": "/img/how-to-use-step3-new-chat.png",
+    "/img/how-to-use-step3-send-message.png": "/img/how-to-use-step3-send-message.png",
+    "/img/search.png": "/img/search.png",
+    "/img/usernotfound.jpg": "/img/usernotfound.jpg"
 }
