@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\Message;
+use Database\Factories\ChatFactory;
 
 class Chat extends Model
 {
@@ -31,5 +32,10 @@ class Chat extends Model
      */
     public function messages() {
         return $this->hasMany(Message::class)->orderBy('created_at', 'desc');
+    }
+
+    public static function factory(): ChatFactory
+    {
+        return ChatFactory::new();
     }
 }

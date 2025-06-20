@@ -18,10 +18,14 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) gd \
     && pecl install redis \
+    && pecl install xdebug-2.9.8 \
     && docker-php-ext-enable redis \
+    && docker-php-ext-enable xdebug \
     && cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini \
     && pecl install memcached && \
     docker-php-ext-enable memcached
+
+COPY xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 
 # Get latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer

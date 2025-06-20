@@ -19,18 +19,9 @@ class UserController extends Controller
      */
     public function index()
     {
-        return User::all();
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
+        return response()->json(
+            UserResource::collection(User::all())
+        );
     }
 
     /**
@@ -43,40 +34,19 @@ class UserController extends Controller
     {
         $user = User::find($id);
         if ($user) {
-            return new UserResource($user);
+            return response()->json(
+                new UserResource($user)
+            );
         } else {
             return response()->json([
-                'error' => 'user with the given id is not found'
+                'error' => 'User with the given id is not found'
             ], 404);
         }
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
-
-    /**
      * Search for users with specified string
-     * 
+     *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */

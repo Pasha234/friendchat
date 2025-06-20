@@ -22,9 +22,12 @@ class ChatChannel
      * @param  \App\Models\User  $user
      * @return array|bool
      */
-    public function join(User $user, $chat_id)
+    public function join(User $user, int $chat_id)
     {
         $chat = Chat::find($chat_id);
+        if (!$chat) {
+            return false;
+        }
         return ($user->id == $chat->to || $user->id == $chat->from);
     }
 }

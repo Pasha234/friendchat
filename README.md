@@ -34,3 +34,15 @@ FriendChat — это SPA-сайт, созданный с использован
   - "walkor/workerman": "^4.0"
 
 Сайт: https://friendchat-online.herokuapp.com/
+
+## Запуск в Docker
+
+Для сборки проекта локально
+```bash
+./docker-build.sh
+```
+
+После сборки можно запустить тесты с выводом показаний покрытия кода
+```bash
+./docker-test-coverage.sh
+```
